@@ -22,7 +22,7 @@ npm install ion-server-api
 ## Requirements
 
 - Node.js v14 or higher.
-- Dependencies: `net`, `events`, `moment`, `jsonrepair`, `shortid` (automatically installed).
+- Dependencies: `net`, `events`, `jsonrepair`, `shortid` (automatically installed).
 
 ## Usage
 
@@ -33,7 +33,7 @@ const IONPlatform = require('ion-server-api');
 const shortid = require('shortid');
 
 // Configure shortid character set
-shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
 
 // Initialize platform with minimal parameters
 const platform = new IONPlatform(
