@@ -1,15 +1,28 @@
 # ion-server-api
 
-A lightweight Node.js connector for the ION trading platform, providing a simple and flexible API to send commands and handle responses over a TCP socket. Supports both old and new command formats, with built-in event handling and automatic reconnection.
+A lightweight Node.js connector for the [IonTrader](https://iontrader.com/) trading platform, designed for high-speed server-to-server integration via TCP socket. It enables seamless communication with the IonTrader platform, supporting both old (`{ command, data, from }`) and new (flat objects like `{ login, volume, cmd, ... }`) command formats, with built-in event handling, automatic reconnection, and dynamic command invocation.
 
 ## Features
 
-- Connects to the ION trading platform via TCP.
-- Supports old format (`{ command, data, from }`) and new format (flat objects like `{ login, volume, cmd, ... }`).
+- Connects to the IonTrader platform via TCP for ultra-low latency communication.
+- Supports legacy command format (`{ command, data, from }`) and modern flat object format (e.g., `{ login, volume, cmd, ... }`).
 - Dynamic command invocation (e.g., `platform.HealthCheck(data)`).
 - Automatic `extID` generation using `shortid`.
-- Configurable reconnection logic and error handling.
-- Minimal configuration with sensible defaults.
+- Configurable reconnection logic and robust error handling.
+- Minimal configuration with sensible defaults for easy integration.
+- Ideal for server-to-server integration, CRM systems, or desktop applications (not recommended for client terminals).
+
+## About IonTrader
+
+[IonTrader](https://iontrader.com/) is an ultra-low latency institutional trading engine designed for brokers and fintech companies. It provides comprehensive brokerage services across multiple financial markets, including Forex, equities, and futures. Key features include White Label licensing, enhanced back-office functionality, and connectivity gateways to exchanges and liquidity providers.
+
+## Documentation
+
+For detailed information on available commands and integration options, refer to the official IonTrader documentation:
+- [Server API Documentation](https://iontrader.com/tcp/)
+- [Client API Documentation](https://iontrader.com/client-api/)
+- [FIX API Documentation](https://iontrader.com/fix-api/)
+
 
 ## Installation
 
@@ -70,7 +83,7 @@ The package supports two command formats:
    platform.send(data);
    ```
 
-2. **New Format** (recommended for ION):
+2. **New Format** (recommended for IonTrader):
    ```javascript
    const data = { "__access": { type: 1 } };
    platform.HealthCheck(data)
@@ -105,9 +118,9 @@ npm run example
 
 The `example/example.js` demonstrates:
 - Initializing `IONPlatform` with minimal parameters.
-- Sending a `HealthCheck` command in the new format.
-- Handling the response using `async/await`.
-- Using `shortid` for `extID` generation.
+- Sending a `HealthCheck` command in the new format using `platform.HealthCheck(data)`.
+- Handling the response with `async/await`.
+- Generating `extID` with `shortid`.
 
 Replace placeholders (`url`, `token`) with real values before running.
 
@@ -135,7 +148,7 @@ Replace placeholders (`url`, `token`) with real values before running.
 
 ## License
 
-MIT License.
+[ISC License](LICENSE)
 
 ## Contributing
 
