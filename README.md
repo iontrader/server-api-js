@@ -59,7 +59,7 @@ const platform = new IONPlatform(
 );
 
 // Send a command in the new format
-const data = { "__access": { type: 1 } };
+const data = {}; // If some data needed
 platform.HealthCheck(data)
   .then(response => console.log('Response:', response))
   .catch(error => console.error('Error:', error.message));
@@ -76,8 +76,8 @@ The package supports two command formats:
    ```javascript
    const data = {
      command: 'HealthCheck',
-     data: { "__access": { type: 1 } },
-     from: 99999
+     data: {},
+     from: 123
    };
    data.extID = shortid.generate();
    platform.send(data);
@@ -85,7 +85,7 @@ The package supports two command formats:
 
 2. **New Format** (recommended for IonTrader):
    ```javascript
-   const data = { "__access": { type: 1 } };
+   const data = {}; // If some data needed
    platform.HealthCheck(data)
      .then(response => console.log('Response:', response));
    ```
@@ -99,7 +99,7 @@ const events = require('events');
 const emitter = new events.EventEmitter();
 const platform = new IONPlatform(url, name, {}, null, null, token, emitter);
 
-const data = { "__access": { type: 1 } };
+const data = {}; // If some data needed
 data.extID = shortid.generate();
 platform.HealthCheck(data);
 
@@ -148,7 +148,7 @@ Replace placeholders (`url`, `token`) with real values before running.
 
 ## License
 
-[ISC License](LICENSE)
+[MIT License](LICENSE)
 
 ## Contributing
 

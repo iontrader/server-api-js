@@ -1,6 +1,6 @@
 {
   "name": "ion-server-api",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "API connector for ION trading platform",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/iontrader/server-api-js/issues"
   },
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "events": "^3.3.0",
     "jsonrepair": "^3.8.0",
