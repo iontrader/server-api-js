@@ -63,14 +63,16 @@ class IONPlatform {
             })
             .on('timeout', () => {
                 console.error('IONPlatform timeout connection', this.name, this.url);
+                if (this.alive) this.reconnect();
             })
             .on('close', () => {
                 this.connected = false;
                 console.warn('IONPlatform closed', this.name);
                 if (this.alive) this.reconnect();
             })
-            .on('error', () => {
-                console.error('IONPlatform error', this.name);
+            .on('error', (err) => {
+                console.error('IONPlatform socket error', this.name, err.message);
+                if (this.alive) this.reconnect();
             })
             .on('data', (data) => {
                 this.recv += data.toString();
@@ -90,10 +92,11 @@ class IONPlatform {
                 tokens.forEach(async (token) => {
                     if (token.length > 0) {
                         let data;
+
                         try {
                             data = JSON.parse(jsonrepair(token.replace(/[\n\r\t]/g, '').replace(/[-\u0019]+/g, "")));
                         } catch (e) {
-                            console.error('Parse error: ', token, e);
+                            console.error('Parse error:', token, e.message);
                             return;
                         }
 
@@ -106,29 +109,45 @@ class IONPlatform {
 
         // Connect to the specified host and port
         let url_pars = this.url.split(':');
-        this.socket.connect({ host: url_pars[0], port: url_pars[1] });
+
+        this.socket.connect({ host: url_pars[0], port: url_pars[1] }, (err) => {
+            if (err) {
+                console.error('IONPlatform connection error', this.name, err.message);
+                if (this.alive) this.reconnect();
+            }
+        });
     }
 
-    send(data) {
-        // Generate extID if not provided
+    async send(data) {
         if (!data.extID) {
             data.extID = shortid.generate();
         }
         // Add authentication token to data
         data.__token = this.token;
-        // Send data over the socket
-        this.socket.write(JSON.stringify(data) + "\r\n");
 
-        // Return a Promise that resolves with the response
-        return new Promise((resolve, reject) => {
-            this.emitter.once(data.extID, (response) => {
-                resolve(response);
+        if (!this.connected) {
+            console.warn('IONPlatform not connected', this.name);
+            return Promise.reject(new Error(`Socket not connected for ${this.name}`));
+        }
+
+        try {
+            this.socket.write(JSON.stringify(data) + "\r\n");
+
+            return await new Promise((resolve, reject) => {
+                const timeoutId = setTimeout(() => {
+                    console.warn('IONPlatform response timeout', this.name, data.extID);
+                    reject(new Error(`Response timeout for extID: ${data.extID}`));
+                }, 30000);
+
+                this.emitter.once(data.extID, (response) => {
+                    clearTimeout(timeoutId);
+                    resolve(response);
+                });
             });
-            // Handle timeout
-            setTimeout(() => {
-                reject(new Error('Response timeout'));
-            }, 30000); // 30 seconds timeout
-        });
+        } catch (err) {
+            console.error('IONPlatform send error', this.name, data.extID, err.message);
+            return Promise.reject(err);
+        }
     }
 
     reconnect() {
@@ -139,10 +158,11 @@ class IONPlatform {
             this._reconnectTimer = setTimeout(() => {
                 delete this._reconnectTimer;
                 this.lastReconnectTime = Date.now();
+                console.info('IONPlatform reconnecting', this.name);
                 this.createSocket();
             }, 4000);
         } else {
-            console.info('Reconnect already pending, doing nothing.');
+            console.info('Reconnect already pending, doing nothing.', this.name);
         }
     }
 
