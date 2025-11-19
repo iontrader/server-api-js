@@ -1,6 +1,6 @@
 /**
- * ion-server-api
- * High-performance TCP client for IonTrader platform
+ * nordentrader-server-api
+ * High-performance TCP client for NordenTrader platform
  * Supports real-time quotes, trades, balance, user & symbol events
  * Zero external dependencies
  */
@@ -40,9 +40,9 @@ function jsonRepair(str) {
         .trim();
 }
 
-class IONPlatform {
+class NTPlatform {
     /**
-     * Create a new IONPlatform instance
+     * Create a new NTPlatform instance
      * @param {string} url - Host and port (e.g., 'host:8080')
      * @param {string} name - Identifier for logging
      * @param {Object} [options={}] - Configuration
@@ -62,7 +62,7 @@ class IONPlatform {
         this.broker = broker || {};
         this.ctx = ctx || {};
         this.ignoreEvents = options.ignoreEvents || false;
-        this.prefix = options.prefix || 'ion';
+        this.prefix = options.prefix || 'nor';
         this.mode = options.mode || 'live';
         this.token = token;
         this.emitter = emitter || new events.EventEmitter();
@@ -97,7 +97,7 @@ class IONPlatform {
 
         this.socket
             .on('connect', () => {
-                console.info(`ION [${this.name}] Connected to ${this.url}`);
+                console.info(`NT [${this.name}] Connected to ${this.url}`);
                 this.connected = true;
                 this.errorCount = 0;
                 this.seenNotifyTokens.clear();
@@ -106,29 +106,29 @@ class IONPlatform {
                 if (this.autoSubscribeChannels.length > 0) {
                     setTimeout(() => {
                         this.subscribe(this.autoSubscribeChannels)
-                            .then(() => console.info(`ION [${this.name}] Auto-subscribed: ${this.autoSubscribeChannels.join(', ')}`))
-                            .catch(err => console.error(`ION [${this.name}] Auto-subscribe failed:`, err.message));
+                            .then(() => console.info(`NT [${this.name}] Auto-subscribed: ${this.autoSubscribeChannels.join(', ')}`))
+                            .catch(err => console.error(`NT [${this.name}] Auto-subscribe failed:`, err.message));
                     }, AUTO_SUBSCRIBE_DELAY_MS);
                 }
             })
             .on('timeout', () => {
-                console.error(`ION [${this.name}] Socket timeout`);
+                console.error(`NT [${this.name}] Socket timeout`);
                 if (this.alive) this.reconnect();
             })
             .on('close', () => {
                 this.connected = false;
-                console.warn(`ION [${this.name}] Connection closed`);
+                console.warn(`NT [${this.name}] Connection closed`);
                 if (this.alive) this.reconnect();
             })
             .on('error', (err) => {
                 this.errorCount++;
-                console.error(`ION [${this.name}] Socket error (count: ${this.errorCount}):`, err.message);
+                console.error(`NT [${this.name}] Socket error (count: ${this.errorCount}):`, err.message);
 
                 // Don't reconnect too aggressively on repeated errors
                 if (this.errorCount < 10 && this.alive) {
                     this.reconnect();
                 } else if (this.errorCount >= 10) {
-                    console.error(`ION [${this.name}] Too many errors, stopping reconnection attempts`);
+                    console.error(`NT [${this.name}] Too many errors, stopping reconnection attempts`);
                     this.alive = false;
                 }
             })
@@ -160,7 +160,7 @@ class IONPlatform {
                 const cleaned = jsonRepair(token);
                 parsed = JSON.parse(cleaned);
             } catch (e) {
-                console.error(`ION [${this.name}] Parse error:`, token.substring(0, 100), e.message);
+                console.error(`NT [${this.name}] Parse error:`, token.substring(0, 100), e.message);
                 continue;
             }
 
@@ -227,7 +227,7 @@ class IONPlatform {
                     continue;
                 }
 
-                console.warn(`ION [${this.name}] Unknown array message:`, parsed);
+                console.warn(`NT [${this.name}] Unknown array message:`, parsed);
                 continue;
             }
 
@@ -261,7 +261,7 @@ class IONPlatform {
                 continue;
             }
 
-            console.warn(`ION [${this.name}] Unknown message:`, parsed);
+            console.warn(`NT [${this.name}] Unknown message:`, parsed);
         }
     }
 
@@ -298,13 +298,13 @@ class IONPlatform {
         payload.__token = this.token;
 
         if (!this.connected) {
-            return Promise.reject(new Error(`ION [${this.name}] Not connected`));
+            return Promise.reject(new Error(`NT [${this.name}] Not connected`));
         }
 
         return new Promise((resolve, reject) => {
             const timeout = setTimeout(() => {
                 this.pendingRequests.delete(payload.extID);
-                reject(new Error(`ION [${this.name}] Timeout for extID: ${payload.extID}`));
+                reject(new Error(`NT [${this.name}] Timeout for extID: ${payload.extID}`));
             }, RESPONSE_TIMEOUT_MS);
 
             // Store in map instead of relying on event emitter
@@ -352,7 +352,7 @@ class IONPlatform {
         // Clear pending requests with error
         for (const [extID, { reject, timeout }] of this.pendingRequests.entries()) {
             clearTimeout(timeout);
-            reject(new Error(`ION [${this.name}] Connection lost`));
+            reject(new Error(`NT [${this.name}] Connection lost`));
         }
         this.pendingRequests.clear();
 
@@ -361,7 +361,7 @@ class IONPlatform {
 
         this._reconnectTimer = setTimeout(() => {
             delete this._reconnectTimer;
-            console.info(`ION [${this.name}] Reconnecting... (attempt ${this.errorCount + 1})`);
+            console.info(`NT [${this.name}] Reconnecting... (attempt ${this.errorCount + 1})`);
             this.createSocket();
         }, delay);
     }
@@ -377,7 +377,7 @@ class IONPlatform {
         // Clear all pending requests
         for (const [extID, { reject, timeout }] of this.pendingRequests.entries()) {
             clearTimeout(timeout);
-            reject(new Error(`ION [${this.name}] Platform destroyed`));
+            reject(new Error(`NT [${this.name}] Platform destroyed`));
         }
         this.pendingRequests.clear();
 
@@ -393,4 +393,4 @@ class IONPlatform {
     }
 }
 
-module.exports = IONPlatform;
+module.exports = NTPlatform;

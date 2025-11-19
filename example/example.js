@@ -1,15 +1,15 @@
 /**
- * IonTrader API Example
+ * NordenTrader API Example
  * Demonstrates full event handling and subscribe/unsubscribe
  */
 
-const IONPlatform = require('../index');
+const NTPlatform = require('../index');
 
-const url = 'example.host:8080'; // Host and port for the ION platform
-const name = 'ion-example'; // Platform name
+const url = 'example.host:8080'; // Host and port for the NordenTrader platform
+const name = 'NordenTrader-example'; // Platform name
 const token = 'your-jwt-auth-token'; // Authentication token
 
-const platform = new IONPlatform(
+const platform = new NTPlatform(
     url,
     name,
     {
@@ -164,5 +164,5 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error('💥 Unhandled rejection at:', promise, 'reason:', reason);
 });
 
-console.log('\n🚀 ION Platform Example Started');
+console.log('\n🚀 NordenTrader Platform Example Started');
 console.log('Press Ctrl+C to stop\n');

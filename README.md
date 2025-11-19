@@ -1,19 +1,19 @@
 <div align="center">
 
-# ion-server-api
+# NordenTrader Server Api JS
 
-**Ultra-low latency Node.js TCP client for [IonTrader](https://iontrader.com)**  
+**Ultra-low latency Node.js TCP client for [NordenTrader](https://nordentrader.com)**  
 Real-time market data, trade execution, balance & user management via TCP.
 
-![npm](https://img.shields.io/npm/v/ion-server-api?color=green)
+![npm](https://img.shields.io/npm/v/nordentrader-server-api?color=green)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D14.17-blue)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Downloads](https://img.shields.io/npm/dm/ion-server-api)
+![Downloads](https://img.shields.io/npm/dm/nordentrader-server-api)
 ![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 
 > **Server-to-Server (S2S) integration** — ideal for brokers, CRMs, HFT bots, and back-office systems.
 
-[Documentation](https://iontrader.com/tcp) · [Examples](./example) · [Report Bug](https://github.com/iontrader/server-api-js/issues)
+[Documentation](https://nordentrader.com/tcp) · [Examples](./example) · [Report Bug](https://github.com/nordentrader/server-api-js/issues)
 
 </div>
 
@@ -51,7 +51,7 @@ Real-time market data, trade execution, balance & user management via TCP.
 ## Installation
 
 ```bash
-npm install ion-server-api
+npm install nordentrader-server-api
 ```
 
 **Requirements:**
@@ -63,11 +63,11 @@ npm install ion-server-api
 ## Quick Start
 
 ```js
-const IONPlatform = require('ion-server-api');
+const NTPlatform = require('nordentrader-server-api');
 
 // Initialize with minimal config
-const platform = new IONPlatform(
-  'broker.iontrader.com:8080', // Host:port
+const platform = new NTPlatform(
+  'broker.nordentrader.com:8080', // Host:port
   'my-trading-bot',
   { autoSubscribe: ['EURUSD', 'BTCUSD'] },
   null, null,
@@ -192,12 +192,12 @@ See [`example/example.js`](./example/example.js)
 
 ## Configuration
 
-| Option | Type | Default | Description |
-|-------|------|---------|-------------|
-| `autoSubscribe` | `string[]` | `[]` | Auto-subscribe on connect |
-| `ignoreEvents` | `boolean` | `false` | Disable all event emission |
+| Option | Type | Default  | Description |
+|-------|------|----------|-------------|
+| `autoSubscribe` | `string[]` | `[]`     | Auto-subscribe on connect |
+| `ignoreEvents` | `boolean` | `false`  | Disable all event emission |
 | `mode` | `'live' \| 'demo'` | `'live'` | Environment mode |
-| `prefix` | `string` | `'ion'` | Event prefix (reserved) |
+| `prefix` | `string` | `'nor'`  | Event prefix (reserved) |
 
 ---
 
@@ -227,8 +227,8 @@ See [`example/example.js`](./example/example.js)
 Your existing code will work without modifications:
 
 ```js
-const IONPlatform = require('ion-server-api');
-const platform = new IONPlatform(/* ... */);
+const NTPlatform = require('nordentrader-server-api');
+const platform = new NTPlatform(/* ... */);
 ```
 
 ---
@@ -241,7 +241,7 @@ const platform = new IONPlatform(/* ... */);
 const EventEmitter = require('events');
 const customEmitter = new EventEmitter();
 
-const platform = new IONPlatform(
+const platform = new NTPlatform(
   url, name, options, 
   null, null, token,
   customEmitter  // Use custom emitter
@@ -300,9 +300,9 @@ console.log('Listeners:', platform.emitter.listenerCount('quote'));
 
 ## Documentation
 
-- **TCP API**: [https://iontrader.com/tcp](https://iontrader.com/tcp)
-- **Client API**: [https://iontrader.com/client-api](https://iontrader.com/client-api)
-- **FIX API**: [https://iontrader.com/fix-api](https://iontrader.com/fix-api)
+- **TCP API**: [https://nordentrader.com/tcp](https://nordentrader.com/tcp)
+- **Client API**: [https://nordentrader.com/client-api](https://nordentrader.com/client-api)
+- **FIX API**: [https://nordentrader.com/fix-api](https://nordentrader.com/fix-api)
 
 ---
 
@@ -315,6 +315,6 @@ See [`LICENSE`](LICENSE) for more information.
 
 **Made with passion for high-frequency trading**
 
-[iontrader.com](https://iontrader.com) · [GitHub](https://github.com/iontrader/server-api-js)
+[nordentrader.com](https://nordentrader.com) · [GitHub](https://github.com/nordentrader/server-api-js)
 
 </div>
